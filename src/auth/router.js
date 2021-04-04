@@ -9,23 +9,24 @@ const bcrypt = require('bcrypt');
 
 
 
+const signup = async (req, res) => {
+  try {
+    let record = await Users.addUser(req.body);
+    res.status(201).json(record);
+  } catch (error) {
+    res.status(403).send('Error Creating User');
+  }
+};
 
-router.post('/signup', async (req, res) => {
+const signin = async (req, res) => {
+  try {
+    res.status(200).json(req.userInfo);
+  } catch (error) {
+    res.status(403).send('Invalid username or password');
+  }
+};
 
-    try {
-        req.body.password = await bcrypt.hash(req.body.password, 10);
-        const user = new Users(req.body);
-        const record = await user.save(req.body);
-        res.status(200).json(record);
-    } catch (e) { res.status(403).send("Error Creating User"); }
-});
-
-router.post('/signin', basic, signinHandler);
-
-
- function signinHandler(req, res) {
-    res.status(200).json(req.user);
-}
-
+router.post('/signup', signup);
+router.post('/signin', basic, signin);
 
 module.exports = router;
